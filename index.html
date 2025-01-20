@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Battleships</title>
+	<link rel="stylesheet" href="styles.css" media="all">
+	<script type='module' src='ui.js' defer></script>
+</head>
+<body>
+	<div class="header">
+		<h3>Battleships</h3>
+		<button class='new-game'>New Game</button>
+		<h3>Battleships</h3>
+	</div>
+	<div class="main">
+		<h1>Battleships</h1>
+		<div class="game-screen">
+			<div class="player1-side">
+				<h3>Your board</h3>
+				<div class="p1-board"></div>
+			</div>
+			<div class="order-window">
+				<h3>Ship placement</h3>
+				<div class="placeShip-ui-config">
+					<label for="order-length">ship length: </label>
+					<select name='length' id='order-length'  class='length-btn'>
+						<option value="1">one</option>
+						<option value="2">two</option>
+						<option value="3">three</option>
+						<option value="4">four</option>
+					</select>
+				</div>
+				<div class="placeShip-ui-config">
+					<label for="order-orientation">ship orientation: </label>
+					<select name='orientation' id='order-orientation' class='orientation-btn'>
+						<option value="0">horizontal</option>
+						<option value="1">vertical</option>
+					</select>
+				</div>
+				<div class="order-buttons">
+					<button class='order-confirm'>confirm</button>
+					<button class='order-cancel'>cancel</button>
+				</div>
+			</div>
+			<div class="cpu-side">
+				<h3>Opponents' board</h3>
+				<div class="cpu-board"></div>
+			</div>
+		</div>
+	</div>
+	<div class="footer">Battleships</div>
+</body>
+</html>

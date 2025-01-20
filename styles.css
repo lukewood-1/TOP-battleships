@@ -1,0 +1,109 @@
+:root {
+	font-family: Helvetica;
+	--accent: #333;
+	--title-clr: #eee;
+}
+
+* {
+	padding: 0;
+	margin: 0;
+}
+
+.header {
+	display: flex;
+	justify-content: space-evenly;
+}
+
+.header h3, .footer {
+	color: var(--title-clr);
+}
+
+.main {
+	background: var(--accent);
+	color: var(--title-clr);
+}
+
+.main h1 {
+	text-align: center;
+}
+
+.game-screen {
+	display: grid;
+	grid:  auto / 1fr 20% 1fr;
+	justify-content: space-evenly;
+}
+
+[class*=-side] {
+	display: flex;
+	flex-flow: column;
+	align-items: center;
+	gap: .5rem;
+}
+
+[class*=-side] h3 {
+	align-items: center;
+}
+
+[class*=-board] {
+	display: grid;
+	background: var(--title-clr);
+	cursor: crosshair;
+}
+
+.board-cell{
+	width: clamp(1.6rem, 3.3vw, 40px);
+	height: clamp(1.6rem, 3.3vw, 40px);
+	border: 1px solid #0003;
+	color: var(--accent);
+	font-size: 2rem;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	&:hover{
+		background: #0002;
+	}
+}
+
+.order-window {
+	position: relative;
+	display: none;
+	flex-flow: column;
+	align-self: space-between;
+	gap: .5rem;
+	& h3 {
+		text-align: center;
+	}
+	& button {
+		padding-block: .5rem;
+		padding-inline: 1rem;
+	}
+}
+
+.order-window div {
+	display: flex;
+	justify-content: space-between;
+}
+
+.friendly-ship {
+	background: #0f43;
+	border: none;
+	box-shadow: 0 0 .5rem #0f43;
+	&:hover{
+		background: #0f43;
+	}
+}
+
+.hit {
+	background: #a003;
+	box-shadow: 0 0 .3rem #a003;
+}
+
+.footer {
+	display: flex;
+	justify-content: center;
+}
+
+.header, .footer {
+	background: var(--accent);
+	height: 15%;
+}
