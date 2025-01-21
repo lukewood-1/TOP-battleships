@@ -63,19 +63,23 @@ function Gameboard(matrix){
 		const row = Math.floor(idx / matrix);
 		const column = Math.floor(idx % matrix);
 
+		if(idx > (matrix**2)) return false;
+
+		// Insert ships into internal board
 		if(orientation === 1){ // 1 == vertical, 0 == horizontal
 			if(row + newShip.length > matrix) return false;
 
-			for(let i = 0; i < newShip.length; i++){
-				board[idx+(i*10)] = newShip;
+			for(let i = 0; i < (matrix * newShip.length); i+= matrix)
+				board[idx+i] = newShip;
 			}
-		} else if(orientation === 0){
+		else if(orientation === 0){
 			if(column + newShip.length > matrix) return false;
 
 			for(let i = 0; i < newShip.length; i++){
-				board[idx] = newShip;
+				board[idx+i] = newShip;
 			}
 		};
+		//Increase ship count on counter object
 		shipList[shipLength]++;
 	};
 
@@ -199,37 +203,52 @@ function UiManager(){
 			playerBoard = document.querySelectorAll('.cpu-board .board-cell');
 		}
 
+		const internalBoard = players[focus].gameboard.board;
 		const matrix = Math.floor(Math.sqrt(players[focus].gameboard.board.length));
 		const row = Math.floor(idx / matrix);
 		const column = Math.floor(idx % matrix);
-		console.log(orientation, column, length, matrix, idx);
 		// Orientation - 0 = horizontal, 1 = vertical
+		// Check whether final index excedes board perimeter
+		if(orientation === 0 && idx+(length-1) >= (matrix**2)) return false
+		else if(orientation === 1 && idx+((length-1) * matrix) >= (matrix**2)) return false;
 		//checking if theres not a ship in position already
-		for(let j = idx; j < idx+length; j++){
-			if(typeof players[focus].gameboard.board[j] === 'object'){
-				console.log('Nope');
-				return false;
-			}
-		}
-
-		if(orientation === 0 && column+(length-1) < matrix){
-			for(let i = 0; i < length; i++){
-				playerBoard[idx+i].textContent = length;
-				if(focus === 1) {
-					playerBoard[idx+i].classList.add('friendly-ship');
+		if(orientation === 0){
+			for(let j = idx; j < idx+length; j++){
+				if(typeof players[focus].gameboard.board[j] === 'object'){
+					return false;
 				}
 			}
+		} else if(orientation === 1){
+			for(let j = idx; j < idx+matrix * length; j+=matrix){
+				if(typeof players[focus].gameboard.board[j] === 'object'){
+					return false
+				}
+			}
+		};
+
+		//Check whether the adjacent indexes have ships
+		//horizontal check
+		if(typeof players[focus].gameboard.board[idx-1] === 'object'
+		|| typeof )
+
+		if(orientation === 0 && column+(length-1) < matrix){
 			players[focus].gameboard.placeShip(length, orientation, idx)
+			for(let i = 0; i < length; i++){
+				playerBoard[idx+i].textContent = length;
+				if(focus === 0) {
+					playerBoard[idx+i].classList.add('friendly-ship');// should move to focus check once testing cpu placeShips ends
+				}
+			}
 			return true;
 		}
 		else if(orientation === 1 && row+(length-1) < matrix){
+			players[focus].gameboard.placeShip(length, orientation, idx)
 			for(let i = 0; i < matrix*length; i+=matrix){
-				playerBoard[idx+i].textContent = length;
-				if(focus === 1){
+				playerBoard[idx+i].textContent = length; // should move to focus check once testing cpu placeShips ends
+				if(focus === 0){
 					playerBoard[idx+i].classList.add('friendly-ship');
 				}
 			}
-			players[focus].gameboard.placeShip(length, orientation, idx)
 			return true;
 		}
 		else return false // booleans are for CPU placeShip randomized place where WHILE(placeShip(randomArgs) === false {placeShip(randomArgs)})
@@ -237,36 +256,33 @@ function UiManager(){
 
 	function cpuPlaceShip(){
 		// randomized ship placement
-		// Needs to account for internal gameboard first, then ui board
 		const internal = players[1].gameboard.board;
-		const external = document.querySelectorAll('.cpu-board .board-cell');
 		// focus and length are fixed, randomize orientation and idx
-		let shipLength = 4;
-		let shipLimit = 1;
+		let shipLength = 1;
+		let shipLimit = 4;
 		let softLimit = shipLimit;
-		let attempt;
-		let rngIdx;
-		let rngOrientation;
-		while(shipLength >= 1){
-			rngIdx = Math.floor(Math.random() * (internal.length-1));
-			rngOrientation = Math.round(Math.random());
-			attempt = placeShip(1, shipLength, rngOrientation, rngIdx);
-			console.log(1, shipLength, rngOrientation, rngIdx);
-			while(attempt === false){
-				rngIdx = Math.floor(Math.random() * internal.length);
-				rngOrientation = Math.round(Math.random());
-				attempt = placeShip(1, shipLength, rngOrientation, rngIdx);
-				attempt;
+		const attempt = () => {
+			const rngIdx = Math.floor(Math.random() * (internal.length));
+			const rngOrientation = Math.round(Math.random());
+			return placeShip(1, shipLength, rngOrientation, rngIdx);
+		};
+		let count = 1;
+		while(shipLength <= 4){
+			debugger; 
+			untilTrue: while(!attempt()){
+				count++;
+				console.log(`count: ${count}`);
+				continue untilTrue;
 			};
 
 			softLimit--;
 			if(softLimit < 1){
-				shipLength--;
-				shipLimit++;
+				shipLength++;
+				shipLimit--;
 				softLimit = shipLimit;
 			}
 		};
-	}
+	};
 
 	function attack(who,idx){
 		let board;
