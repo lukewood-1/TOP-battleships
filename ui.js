@@ -1,4 +1,4 @@
-import {Ship, Gameboard, Player, UiManager, numberify} from './main.js';
+import {Ship, Gameboard, Player, UiManager} from './main.js';
 
 function main(){
 	const ui = UiManager();
@@ -7,8 +7,7 @@ function main(){
 	newGameBtn.addEventListener('click', ()=> {
 		ui.resetPlayers();
 		ui.renderBoards('.p1-board','.cpu-board');
-		ui.cleanBoards('.p1-board', '.cpu-board');
-		ui.listen();
+		ui.listen(0);
 		ui.cpuPlaceShip();
 	});
 

@@ -2,6 +2,8 @@
 	font-family: Helvetica;
 	--accent: #333;
 	--title-clr: #eee;
+	--fast-transit: 0.25s all ease-out;
+	--slow-transit: 0.45s all ease-out;
 }
 
 * {
@@ -48,6 +50,8 @@
 	display: grid;
 	background: var(--title-clr);
 	cursor: crosshair;
+	transition: var(--slow-transit);
+	transform: scale(1);
 }
 
 .board-cell{
@@ -59,6 +63,7 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	transition: var(--fast-transit);
 	&:hover{
 		background: #0002;
 	}
@@ -87,15 +92,71 @@
 .friendly-ship {
 	background: #0f43;
 	border: none;
-	box-shadow: 0 0 .5rem #0f43;
+	box-shadow: 0 0 1rem #0f47;
 	&:hover{
 		background: #0f43;
 	}
 }
 
-.hit {
-	background: #a003;
-	box-shadow: 0 0 .3rem #a003;
+.miss-mark {
+	background: #f004;
+	border: none;
+	box-shadow: 0 0 1rem #f007;
+	&:hover{
+		background: #f008;
+	}
+}
+
+.hit-mark {
+	background: #00f3;
+	border: none;
+	box-shadow: 0 0 1rem #00f7;
+	&:hover{
+		background: #00f7;
+	}
+}
+
+.invisible-wall {
+	background: var(--accent);
+	opacity: 0.4;
+	position: absolute;
+	display: block;
+	z-index: 1;
+}
+
+div .inactive-player {
+	background: #fff5;
+	transform: scale(0.925);
+}
+
+.game-over-screen {
+	background: #333c;
+	color: var(--title-clr);
+	width: 100vw;
+	height: 100vh;
+	display: flex;
+	flex-flow: column;
+	gap: 2rem;
+	align-items: center;
+	justify-content: center;
+
+	& h2 {
+		font-size: 5rem;
+		text-shadow: 0 0 1rem #fff;
+	}
+
+	& h3 {
+		font-size: 1.75rem;
+		text-shadow: 0 0 0.75rem #fff;
+	}
+
+	& button {
+		padding-inline: 1.2rem;
+    padding-block: 0.6rem;
+    font-size: 1.25rem;
+    border-radius: 0.5rem;
+	}
+
 }
 
 .footer {
