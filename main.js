@@ -247,9 +247,6 @@ function UiManager(){
 			players[focus].gameboard.placeShip(length, orientation, idx)
 			for(let i = 0; i < length; i++){
 				playerBoard[idx+i].textContent = length;
-				if(focus === 0) {
-					playerBoard[idx+i].classList.add('friendly-ship');// should move to focus check once testing cpu placeShips ends
-				}
 			}
 			return true;
 		}
@@ -257,18 +254,254 @@ function UiManager(){
 			players[focus].gameboard.placeShip(length, orientation, idx)
 			for(let i = 0; i < matrix*length; i+=matrix){
 				playerBoard[idx+i].textContent = length; // should move to focus check once testing cpu placeShips ends
-				if(focus === 0){
-					playerBoard[idx+i].classList.add('friendly-ship');
-				}
 			}
 			return true;
 		}
 		else return false // booleans are for CPU placeShip randomized place where WHILE(placeShip(randomArgs) === false {placeShip(randomArgs)})
 	};
 
-	function cpuPlaceShip(){
+	let shipLength; // used in manualPlaceShip
+	let targetOrientation = 0; // used in manualPlaceShip
+	function manualPlaceShip(){
+		//Hide title and buttons
+		const randomBtn = document.querySelector('.random-ship-placement-btn');
+		const manualBtn = document.querySelector('.manual-ship-placement-btn');
+		const title = document.querySelector('.order-window > h3:nth-child(1)');
+		randomBtn.style.display = 'none';
+		manualBtn.style.display = 'none';
+		title.style.display = 'none';
+
+		//reveal manual place window
+		let rule;
+		for(let stylesheet of document.styleSheets[0].cssRules){
+			if(stylesheet.selectorText === '.manual-place-window'){
+				rule = stylesheet;
+				break;
+			}
+		}
+		rule.style.display = 'grid';
+
+		// Attach mousemove event for feedback messages
+		const feedbackDiv = document.querySelector('.cursor-feedback');
+		let cursor;
+		const stylesheet = document.styleSheets[0].cssRules;
+		for(let i of stylesheet){
+			if(i.selectorText === '.cursor-feedback'){
+				cursor = i;
+				break;
+			}
+		}
+
+		const move = e => {
+			e.preventDefault();
+			let top = e.y + 20;
+			let left = e.x + 20;
+			cursor.style.top = `${top}px`;
+			cursor.style.left = `${left}px`;
+		};
+
+		document.querySelector('.p1-board').addEventListener('dragover', move);
+
+		const showCursorMsg = msg => {
+			feedbackDiv.textContent = msg;
+			if(feedbackDiv.classList.contains('slow-fade')){
+				feedbackDiv.classList.remove('slow-fade');
+			};
+		};
+
+		const hideCursorMsg = () => {
+			feedbackDiv.textContent = '';
+			if(!feedbackDiv.classList.contains('slow-fade')){
+				feedbackDiv.classList.add('slow-fade');
+			};
+		}
+
+		// Address all containers at once, then specify bt index
+		const containers = document.querySelectorAll('.ship-section');
+
+			//change orientation btn
+			const orientationBtn = document.querySelector('.orientation');
+				orientationBtn.addEventListener('click', e => {
+					if(e.target.getAttribute('data-direction') == 0){
+						e.target.setAttribute('data-direction', '1');
+						e.target.textContent = '↓';
+						targetOrientation = 1;
+					} 
+					else if(e.target.getAttribute('data-direction') == 1){
+						e.target.setAttribute('data-direction', '0');
+						e.target.textContent = '→';
+						targetOrientation = 0;
+					}
+				});
+
+		containers.forEach( (box, idx) => {
+
+			//add DnD events to ships and board cells
+			const ships = box.querySelector('.ship');
+
+			ships.addEventListener('dragstart', e => shipLength = e.target.children.length);
+			ships.addEventListener('dragend', e => shipLength = undefined);
+		})
+
+		function preview(e){
+			const cells = document.querySelectorAll('.p1-board .board-cell');
+			const idx = Array.prototype.indexOf.call(cells, e.target);
+			const matrix = 8;
+			const row = Math.floor(idx / matrix);
+			const column = Math.floor(idx % matrix);
+			const player = players[0].gameboard.board;
+			if(targetOrientation === 0){
+				for(let i = 0; i < shipLength && (column+i) < matrix; i++){
+					if(typeof player[idx+i] === 'object'){
+						for(let i = 0; i < shipLength && (column+i) < matrix; i++){
+							cells[idx+i].classList.add('miss-mark');
+						}
+						showCursorMsg('Position not allowed');
+						return;
+					}
+				}
+				if(column + (shipLength-1) < matrix){
+					for(let i = 0; i < shipLength; i++){
+						if(cells[idx+i].classList.contains('miss-mark')){
+							cells[idx+i].classList.remove('miss-mark');
+						}
+						cells[idx+i].classList.add('friendly-ship');
+					}
+					hideCursorMsg();
+				}
+				else {
+					for(let i = 0; column+i < matrix; i++){
+						cells[idx+i].classList.add('miss-mark')
+					}
+					showCursorMsg('Position not allowed');
+				}
+			}
+			else if(targetOrientation === 1){
+				if(row + (shipLength-1) < matrix){
+					for(let i = 0; i < (matrix*shipLength) && (row+i) < matrix; i+= matrix){
+						if(typeof player[idx+i] === 'object'){
+							for(let i = 0; i < shipLength && (row+i) < matrix; i+=matrix){
+								cells[idx+i].classList.add('miss-mark');
+							}
+							showCursorMsg('Position not allowed');
+							return;
+						}
+					}
+					for(let i = 0; i < (shipLength*matrix); i+=matrix){
+						if(cells[idx+i].classList.contains('miss-mark')){
+							cells[idx+i].classList.remove('miss-mark');
+						}
+						cells[idx+i].classList.add('friendly-ship');
+					}
+					hideCursorMsg();
+				} else {
+					for(let i = 0, count = 0; (row+count) < matrix; i+=matrix, count++){
+						cells[idx+i].classList.add('miss-mark');
+					}
+					showCursorMsg('Position not allowed');
+				}
+			}
+		};
+
+		function clearPreview(e){
+			const cells = document.querySelectorAll('.p1-board .board-cell');
+			const idx = Array.prototype.indexOf.call(cells, e.target);
+			const matrix = 8;
+			const row = Math.floor(idx / matrix);
+			const column = Math.floor(idx % matrix);
+			const player = players[0].gameboard.board;
+			if(targetOrientation === 0){
+				for(let i = 0; i < shipLength && (column+i) < matrix; i++){
+					if(typeof player[idx+i] === 'object'){
+						for(let i = 0; i < shipLength && (column+i) < matrix; i++){
+							cells[idx+i].classList.remove('miss-mark');
+						}
+						return;
+					}
+				}
+				if(column + (shipLength-1) < matrix){
+					for(let i = 0; i < shipLength; i++){
+						cells[idx+i].classList.remove('friendly-ship');
+					}
+				}
+				else {
+					for(let i = 0; column+i < matrix; i++){
+						cells[idx+i].classList.remove('miss-mark');
+					}
+				}
+			}
+			else if(targetOrientation === 1){
+				if(row + (shipLength-1) < matrix){
+					for(let i = 0; i < (matrix*shipLength) && (row+i) < matrix; i+= matrix){
+						if(typeof player[idx+i] === 'object'){
+							for(let i = 0; i < shipLength && (row+i) < matrix; i+=matrix){
+								cells[idx+i].classList.remove('miss-mark');
+							}
+							return;
+						}
+					}
+					for(let i = 0, count = 0; count < shipLength; i+=matrix, count++){
+						cells[idx+i].classList.remove('friendly-ship');
+					}
+				}
+				else {
+					for(let i = 0, count = 0; row+count < matrix; i+=matrix, count++){
+						cells[idx+i].classList.remove('miss-mark');
+					}
+				}
+			}
+		};
+
+		const placeShipWithVerification = e => {
+			const count = document.querySelectorAll('.ship-number')[shipLength-1];
+			const limit = document.querySelectorAll('.ship-limit')[shipLength-1];
+			const internalShipCount = players[0].gameboard.shipList[shipLength];
+
+			const cells = document.querySelectorAll('.p1-board .board-cell');
+			const idx = Array.prototype.indexOf.call(cells, e.target);
+
+			if(internalShipCount < limit.textContent){
+				if(placeShip(0, shipLength, targetOrientation, idx)){
+					count.textContent = internalShipCount+1;
+				}
+			}
+		};
+
+		const boardCells = document.querySelectorAll('.p1-board .board-cell');
+		let target;
+		boardCells.forEach( (cell,idx) => {
+			cell.addEventListener('dragleave', e => {
+				e.preventDefault();
+				clearPreview(e);
+				if(![...boardCells].includes(e.relatedTarget)){
+					hideCursorMsg();
+				}
+			})
+			cell.addEventListener('dragenter', e => {
+				e.preventDefault();
+				preview(e);
+			})
+			cell.addEventListener('dragover', e => {
+				e.preventDefault();
+			})
+			cell.addEventListener('drop', e => {
+				e.preventDefault();
+				clearPreview(e);
+				hideCursorMsg();
+				placeShipWithVerification(e);
+			})
+		});
+
+		const startBtn = document.querySelector('.game-start');
+		startBtn.disabled = true;
+
+		//remove DnD events from board cells upon gameStartw
+		
+	}
+
+	function randomizedPlaceShip(who){
 		// randomized ship placement
-		const internal = players[1].gameboard.board;
+		const internal = players[who].gameboard.board;
 		// focus and length are fixed, randomize orientation and idx
 		let shipLength = 1;
 		let shipLimit = 4;
@@ -276,7 +509,7 @@ function UiManager(){
 		const attempt = () => {
 			const rngIdx = Math.floor(Math.random() * (internal.length));
 			const rngOrientation = Math.round(Math.random());
-			return placeShip(1, shipLength, rngOrientation, rngIdx);
+			return placeShip(who, shipLength, rngOrientation, rngIdx);
 		};
 		while(shipLength <= 4){
 			untilTrue: while(!attempt()){
@@ -291,8 +524,10 @@ function UiManager(){
 			}
 		};
 
-		const cpuCells = document.querySelectorAll('.cpu-board .board-cell');
-		cpuCells.forEach( cell=> {cell.textContent = ''});
+		if(who === 1){
+			const cpuCells = document.querySelectorAll('.cpu-board .board-cell');
+			cpuCells.forEach( cell=> {cell.textContent = ''});
+		}
 	};
 
 	function cpuAttack(){ //Attack players board using rng
@@ -312,6 +547,7 @@ function UiManager(){
 				gameOver(1);
 			} else {
 				alert("There's still some ships left!");
+				cpuAttack();
 			}
 		} else {
 			uiBoard[rng].textContent = 'x';
@@ -346,34 +582,16 @@ function UiManager(){
 
 	};
 
-	function orderShip(targetEl){
-		const modal = document.querySelector('.order-window');
-		const rect = targetEl.getBoundingClientRect();
-		const stylesheet = document.styleSheets[0].cssRules;
-		const matrix = Math.sqrt(players[0].gameboard.board.length);
-		const confirmBtn = document.querySelector('.order-confirm');
-		const cancelBtn = document.querySelector('.order-cancel');
-		const idxFinder = Array.prototype.indexOf.call(document.querySelectorAll('.p1-board .board-cell'), targetEl);
+	function orderShip(e){
+		const random = document.querySelector('.random-ship-placement-btn');
+		const manual = document.querySelector('manual-ship-placement-btn');
 
-		for(let rule of stylesheet){
-			if(rule.selectorText === '.order-window'){
-				rule.style.left = `${rect.x + (rect.width*1)}px`;
-				rule.style.top = `${rect.y + (rect.height *0.2)}px`;
-				break;
-			}
+		if(e.target === manual){
+			
 		}
-
-		confirmBtn.addEventListener('click', ()=> {
-		const lengthValue = document.querySelector('.length-btn').value;
-		const orientationValue = document.querySelector('.orientation-btn').value;
-			console.log(+lengthValue, +orientationValue, idxFinder);
-			placeShip(0,+lengthValue,+orientationValue, idxFinder);
-			modal.close();
-		});
-
-		cancelBtn.addEventListener('click', ()=> modal.close());
-
-		modal.showModal();
+		else if(e.target === random){
+			randomizedPlaceShip(0)
+		}
 	};
 
 	function listen(){
@@ -393,6 +611,18 @@ function UiManager(){
 			cpuCells.forEach( (cell, idx) => {
 				cell.addEventListener('click', ()=>{humanAttack(idx)});
 			});
+
+		// listen for placeShip choices in the orderWindow
+		const randomBtn = document.querySelector('.random-ship-placement-btn');
+		const manualBtn = document.querySelector('.manual-ship-placement-btn');
+		
+		const orderWindow = document.querySelector('.order-window');
+		
+		randomBtn.addEventListener('click', ()=> {
+			randomizedPlaceShip(0);
+
+		});
+		manualBtn.addEventListener('click', manualPlaceShip)
 	};
 
 	function switchTurns(toWhom){
@@ -482,13 +712,37 @@ function UiManager(){
 		newGameBtn.addEventListener('click', () => {
 			resetPlayers();
 			listen(0);
-			cpuPlaceShip();
+			randomizedPlaceShip(1);
 			endScreen.close();
 		});
 		wrapper.append(endTitle, endSubtitle, newGameBtn);
 		endScreen.append(wrapper);
 		document.body.append(endScreen);
 		endScreen.showModal();
+		endScreen.classList.remove('game-over-screen');
+	};
+
+	function titleMsg(msg){
+		const msgBoard = document.querySelector('.main h1');
+		let msgArr;
+		if(msg === 'hit'){
+			msgArr = [
+				"Yeah! We got em with that one!",
+				""
+			];
+
+		}
+		return title.textContent = msg;
+	};
+
+	function playerMsg(msg){
+		const msgBoard = document.querySelector('.player1-side h3');
+		return msgBoard.textContent = msg;
+	};
+
+	function cpuMsg(msg){
+		const msgBoard = document.querySelector('.cpu-side h3');
+		return msgBoard.textContent = msg;
 	};
 
 
@@ -497,12 +751,16 @@ function UiManager(){
 		renderBoards,
 		orderShip,	
 		placeShip,	
-		cpuPlaceShip,
+		manualPlaceShip,
+		randomizedPlaceShip,
 		humanAttack,
 		players,
 		listen,
 		switchTurns,
 		gameOver,
+		titleMsg,
+		playerMsg,
+		cpuMsg,
 	}
 };
 

@@ -21,26 +21,75 @@
 				<div class="p1-board"></div>
 			</div>
 			<div class="order-window">
-				<h3>Ship placement</h3>
-				<div class="placeShip-ui-config">
-					<label for="order-length">ship length: </label>
-					<select name='length' id='order-length'  class='length-btn'>
-						<option value="1">one</option>
-						<option value="2">two</option>
-						<option value="3">three</option>
-						<option value="4">four</option>
-					</select>
-				</div>
-				<div class="placeShip-ui-config">
-					<label for="order-orientation">ship orientation: </label>
-					<select name='orientation' id='order-orientation' class='orientation-btn'>
-						<option value="0">horizontal</option>
-						<option value="1">vertical</option>
-					</select>
-				</div>
-				<div class="order-buttons">
-					<button class='order-confirm'>confirm</button>
-					<button class='order-cancel'>cancel</button>
+				<h3>Player ship placement</h3>
+				<button class="random-ship-placement-btn">random</button>
+				<button class="manual-ship-placement-btn">manual</button>
+				<div class="manual-place-window">
+					<div class='title'>
+						<h2>Drag your ships to the board</h2>
+						<p>(Inserting ships adjacent to others is not allowed except battleships)</p>
+					</div>
+
+					<div class="ship-section one">
+						<h3>Scout</h3>
+						<div class="ship-count-wrapper">
+							<div class="ship" draggable='true'>
+								<div class="ship-cells">1</div>
+							</div>
+							<p class="ship-count">
+								<span class="ship-number">0</span>/<span class="ship-limit">4</span>
+							</p>
+						</div>
+					</div>
+
+					<div class="ship-section two">
+						<h3>Submarine</h3>
+						<div class="ship-count-wrapper">
+							<div class="ship" draggable='true'>
+								<div class="ship-cells">2</div>
+								<div class="ship-cells">2</div>
+							</div>
+							<p class="ship-count">
+								<span class="ship-number">0</span>/<span class="ship-limit">3</span>
+							</p>
+						</div>
+					</div>
+
+					<div class="ship-section three">
+						<h3>Destroyer</h3>
+						<div class="ship-count-wrapper">
+							<div class="ship" draggable='true'>
+								<div class="ship-cells">3</div>
+								<div class="ship-cells">3</div>
+								<div class="ship-cells">3</div>
+							</div>
+							<p class="ship-count">
+								<span class="ship-number">0</span>/<span class="ship-limit">2</span>
+							</p>
+						</div>
+					</div>
+
+					<div class="ship-section four">
+						<h3>Battleship</h3>
+							<div class="ship-count-wrapper">
+								<div class="ship" draggable='true'>
+									<div class="ship-cells">4</div>
+									<div class="ship-cells">4</div>
+									<div class="ship-cells">4</div>
+									<div class="ship-cells">4</div>
+								</div>
+								<p class="ship-count">
+									<span class="ship-number">0</span>/<span class="ship-limit">1</span>
+								</p>
+							</div>
+					</div>
+
+					<div class="ship-orientation">
+						<span>ship orientation: </span>
+						<button type='button' class="orientation" data-direction='0'>→</button>
+					</div>
+					<button class="game-start">start game</button>
+
 				</div>
 			</div>
 			<div class="cpu-side">
@@ -50,5 +99,6 @@
 		</div>
 	</div>
 	<div class="footer">Battleships</div>
+	<div class='cursor-feedback slow-fade'>boom</div>
 </body>
 </html>

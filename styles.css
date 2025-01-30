@@ -4,11 +4,23 @@
 	--title-clr: #eee;
 	--fast-transit: 0.25s all ease-out;
 	--slow-transit: 0.45s all ease-out;
+	--friendly: #0f43;
+	--hit: #0f43;
+	--miss: #f004;
+	--friendly-hover: #0f47;
+	--hit-hover: #00f7;
+	--miss-hover: #f008;
 }
 
 * {
 	padding: 0;
 	margin: 0;
+}
+
+body {
+	height: 100vh;
+	display: grid;
+	grid: 7.5% 1fr 7.5% / auto;
 }
 
 .header {
@@ -31,7 +43,7 @@
 
 .game-screen {
 	display: grid;
-	grid:  auto / 1fr 20% 1fr;
+	grid:  auto / repeat(3, 1fr);
 	justify-content: space-evenly;
 }
 
@@ -63,7 +75,6 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	transition: var(--fast-transit);
 	&:hover{
 		background: #0002;
 	}
@@ -84,35 +95,91 @@
 	}
 }
 
-.order-window div {
+.manual-place-window {
+	display: none;
+	grid: 2.5rem 1fr / repeat(2, 1fr);
+	gap: 1.5rem 1rem;
+	& h2 {
+		grid-area: 1 / 1 / 2 / -1;
+	}
+}
+
+.manual-place-window .title {
+	grid-area: 1 / 1 / 2 / -1;
+}
+
+.ship {
 	display: flex;
-	justify-content: space-between;
+	align-items: center;
+	justify-content: center;
+}
+
+.ship-count-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.ship-cells {
+	color: var(--title-clr);
+	background: var(--friendly);
+	border: 2px dotted var(--friendly-hover);
+	width: 20px;
+	height: 20px;
+	display: flex;
+	align-items: flex-end;
+	justify-content: center;
+	transition: var(--fast-transit);
+	&:hover {
+		background: var(--friendly-hover);
+		box-shadow: 0 0 .25rem var(--friendly);
+	}
+}
+
+.ship-orientation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ship-orientation button {
+	height: 2rem;
+	aspect-ratio: 1/1;
+  padding: 0;
+  border-radius: 0.4rem;
+  font-size: 2rem;
+	background: var(--accent);
+	color: var(--friendly-hover);
+	text-shadow: 0 0 .5rem var(--title-clr);
+  display: flex;
+  align-items: flex-end;
+	justify-content: center;
 }
 
 .friendly-ship {
-	background: #0f43;
+	background: var(--friendly);
 	border: none;
-	box-shadow: 0 0 1rem #0f47;
+	box-shadow: 0 0 1rem var(--friendly-hover);
 	&:hover{
-		background: #0f43;
+		background: var(--friendly-hover);
 	}
 }
 
 .miss-mark {
-	background: #f004;
+	background: var(--miss);
 	border: none;
-	box-shadow: 0 0 1rem #f007;
+	box-shadow: 0 0 1rem var(--miss-hover);
 	&:hover{
-		background: #f008;
+		background: var(--miss-hover);
 	}
 }
 
 .hit-mark {
-	background: #00f3;
+	background: var(--hit);
 	border: none;
-	box-shadow: 0 0 1rem #00f7;
+	box-shadow: 0 0 1rem var(--hit-hover);
 	&:hover{
-		background: #00f7;
+		background: var(--hit-hover);
 	}
 }
 
@@ -166,5 +233,29 @@ div .inactive-player {
 
 .header, .footer {
 	background: var(--accent);
-	height: 15%;
+}
+
+.cursor-feedback {
+	position: absolute;
+	top: 0;
+	left: 0;
+	border-radius: 1rem;
+	width: max-content;
+	height: min-content;
+	padding: .5rem;
+
+	background: var(--accent);
+	color: var(--title-clr);
+	letter-spacing: 1px;
+	box-shadow: 5px 6px 1rem -0.1rem #f006;
+
+	transition: opacity .2s ease-out;
+}
+
+.hidden {
+	display: none;
+}
+
+.slow-fade {
+	opacity: 0;
 }

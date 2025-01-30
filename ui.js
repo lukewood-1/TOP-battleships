@@ -8,11 +8,11 @@ function main(){
 		ui.resetPlayers();
 		ui.renderBoards('.p1-board','.cpu-board');
 		ui.listen(0);
-		ui.cpuPlaceShip();
+		ui.randomizedPlaceShip(1);
 	});
 
 	document.addEventListener('DOMContentLoaded', ()=> {
-		console.log('page loaded!');
+		console.log('loaded!');
 	});
 
 };
