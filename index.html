@@ -8,9 +8,20 @@
 </head>
 <body>
 	<div class="header">
-		<h3>Battleships</h3>
 		<button class='new-game'>New Game</button>
-		<h3>Battleships</h3>
+		<button class="notes" popovertarget="notes-div">Notes</button>
+		<div popover class='notes-div' id="notes-div">
+			<h2>Not the usual Battlefield game</h2>
+			<article>
+				<p>During development, I'd make this just like other existing battlefield games on the internet. But in the end, I chose not to, and that produced some changes. For example:</p>
+				<ul>
+					<li>- In this version, you CAN place ships adjacent to other ships. I had implemented this but chose to rollback this one out;</li>
+					<li>- In this version, you will NOT see adjacent visual feedback when you attack a cell. The feedback will exist only in the target cell.</li>
+					<li>- If you don't have visual feedback on cells other than your targeted cells, you won't always know what ships you have left!</li>
+				</ul>
+				<p>This makes this version harder and longer to finish than others as you don't know which direction you must hit to destroy the rest of a ship after the first hit. Have fun!</p>
+			</article>
+		</div>
 	</div>
 	<div class="main">
 		<h1>Battleships</h1>
@@ -25,10 +36,7 @@
 				<button class="random-ship-placement-btn">random</button>
 				<button class="manual-ship-placement-btn">manual</button>
 				<div class="manual-place-window">
-					<div class='title'>
-						<h2>Drag your ships to the board</h2>
-						<p>(Inserting ships adjacent to others is not allowed except battleships)</p>
-					</div>
+					<h2>Drag your ships to the board</h2>
 
 					<div class="ship-section one">
 						<h3>Scout</h3>
@@ -88,6 +96,7 @@
 						<span>ship orientation: </span>
 						<button type='button' class="orientation" data-direction='0'>→</button>
 					</div>
+					<button class="reset-game">reset game</button>
 					<button class="game-start">start game</button>
 
 				</div>

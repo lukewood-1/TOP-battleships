@@ -5,7 +5,7 @@
 	--fast-transit: 0.25s all ease-out;
 	--slow-transit: 0.45s all ease-out;
 	--friendly: #0f43;
-	--hit: #0f43;
+	--hit: #04f3;
 	--miss: #f004;
 	--friendly-hover: #0f47;
 	--hit-hover: #00f7;
@@ -15,17 +15,77 @@
 * {
 	padding: 0;
 	margin: 0;
+	user-select: none;
 }
 
 body {
 	height: 100vh;
 	display: grid;
 	grid: 7.5% 1fr 7.5% / auto;
+	background: var(--accent);
+	gap: 1rem;
+}
+
+button {
+	padding: 0 .75rem;
+	border-radius: .5rem;
+}
+
+dialog {
+	width: 50%;
+	background: var(--accent);
+	color: var(--title-clr);
+	border-color: transparent;
+	border-radius: 1rem;
+	box-shadow: 0 0 .7rem #fff, 0 0 2rem var(--title-clr);
+	position: relative;
+	top: 25%;
+	left: 25%;	
+	padding: 2rem;
+	& div{
+		display: flex;
+		flex-flow: column;
+		align-items: center;
+		gap: 1rem;
+	}
+	& h2 {
+		font-size: 4rem;
+	}
+	& h3 {
+		font-size: 2.5rem;
+	}
+	& button {
+		padding: .5rem 1rem;
+		border-radius: .2rem;
+	}
 }
 
 .header {
 	display: flex;
 	justify-content: space-evenly;
+}
+
+.notes-div {
+  width: 95%;
+	height: 75%;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  background: var(--title-clr);
+	position: relative;
+	top: 10%;
+	transition: all .5s ease-out;
+	& h2 {
+		text-align: center;
+		font-size: 3rem;
+		margin-bottom: 2.5rem;
+	}
+	& li {
+		list-style: none;
+	}
+	& *:not(h2) {
+    font-size: 1.4rem;
+    margin-bottom: 1.4rem;
+	}
 }
 
 .header h3, .footer {
@@ -101,6 +161,7 @@ body {
 	gap: 1.5rem 1rem;
 	& h2 {
 		grid-area: 1 / 1 / 2 / -1;
+		text-align: center;
 	}
 }
 
@@ -159,7 +220,6 @@ body {
 .friendly-ship {
 	background: var(--friendly);
 	border: none;
-	box-shadow: 0 0 1rem var(--friendly-hover);
 	&:hover{
 		background: var(--friendly-hover);
 	}
@@ -168,7 +228,6 @@ body {
 .miss-mark {
 	background: var(--miss);
 	border: none;
-	box-shadow: 0 0 1rem var(--miss-hover);
 	&:hover{
 		background: var(--miss-hover);
 	}
@@ -177,7 +236,6 @@ body {
 .hit-mark {
 	background: var(--hit);
 	border: none;
-	box-shadow: 0 0 1rem var(--hit-hover);
 	&:hover{
 		background: var(--hit-hover);
 	}
@@ -247,9 +305,13 @@ div .inactive-player {
 	background: var(--accent);
 	color: var(--title-clr);
 	letter-spacing: 1px;
-	box-shadow: 5px 6px 1rem -0.1rem #f006;
+	box-shadow: 5px 6px 1rem -0.1rem #f003;
 
 	transition: opacity .2s ease-out;
+}
+
+[class*=ship-placement-btn] {
+	display: block;
 }
 
 .hidden {

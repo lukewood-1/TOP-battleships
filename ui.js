@@ -4,12 +4,13 @@ function main(){
 	const ui = UiManager();
 	const newGameBtn = document.querySelector('.new-game');
 	
-	newGameBtn.addEventListener('click', ()=> {
+	newGameBtn.addEventListener('click', e => {
 		ui.resetPlayers();
 		ui.renderBoards('.p1-board','.cpu-board');
-		ui.listen(0);
-		ui.randomizedPlaceShip(1);
-	});
+		ui.listen();
+		e.target.addEventListener('click', ()=>location.reload());
+		e.target.textContent = 'reload';
+	}, {once: true});
 
 	document.addEventListener('DOMContentLoaded', ()=> {
 		console.log('loaded!');
