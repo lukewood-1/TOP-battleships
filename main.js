@@ -459,11 +459,11 @@ function UiManager(){
 		// Check whether all ships have been placed (so the start button can be enabled)
 		const canGameStart = ()=> {
 			const internalList = players[0].gameboard.shipList;
-			const limit = Object.keys(internalList);
+			const limit = [4,3,2,1];
 			const startBtn = document.querySelector('.game-start');
 			for(let i in internalList){
-				const count = internalList[1];
-				if(count < +limit[i-1]){
+				const count = internalList[i];
+				if(count < limit[i-1]){
 					startBtn.disabled = true;
 					return false;
 				}
