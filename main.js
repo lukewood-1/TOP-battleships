@@ -550,6 +550,7 @@ function UiManager(){
 					}
 				}
 				invisibleWall.style.display = 'none';
+				title.removeAttribute('style');
 			});
 			manualWindow.style.display = 'none';
 			randomizedPlaceShip(1);
